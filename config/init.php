@@ -17,7 +17,7 @@ define("CACHE", ROOT . '/tmp/cache');
 // Путь к папке с логами
 define("LOGS", ROOT . '/tmp/logs');
 // Путь к папке с конфигурацией
-define("CONFIG", ROOT . '/tmp/config');
+define("CONFIG", ROOT . '/config');
 // Путь к папке с шаблоном сайта по умолчанию
 define("LAYOUT", 'ishop');
 // Адрес сайта
