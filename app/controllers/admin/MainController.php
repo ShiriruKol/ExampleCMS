@@ -2,10 +2,12 @@
 
 namespace app\controllers\admin;
 
-class MainController
+use core\Controller;
+
+class MainController extends Controller
 {
-    public function indexAction()
+    public function indexAction(): void
     {
-        echo "Hello admin";
+        echo __METHOD__;
     }
 }
