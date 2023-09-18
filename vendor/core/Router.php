@@ -21,12 +21,39 @@ class Router
     {
         return self::$route;
     }
+
+    protected  static function removeQueryString($url)
+    {
+        if ($url) {
+            $params = explode('&', $url, 2);
+            if (false === str_contains($params[0], '=')) {
+                return rtrim($params[0], '/');
+            }
+        }
+        return '';
+    }
+
     public static function dispatch($url)
     {
+        $url = self::removeQueryString($url);
+
         if (self::matchRoute($url)) {
-            echo 'Ok';
+
+            $controller = 'app\controllers\\' . self::$route['admin_prefix'] . self::$route['controller'] . 'Controller';
+            if (class_exists($controller)) {
+                $controllerObject = new $controller(self::$route);
+                $action = self::lowerCamelCase(self::$route['action'] . 'Action');
+                if (method_exists($controllerObject, $action)) {
+                    $controllerObject->$action();
+                } else {
+                    throw new \Exception("Метод {$controller}::{$action} не найден", 404);
+                }
+            } else {
+                throw new \Exception("Контроллер {$controller} не найден", 404);
+            }
+
         } else {
-            echo 'No';
+            throw new \Exception("Страница не найдена", 404);
         }
     }
 
@@ -34,7 +61,6 @@ class Router
     {
         foreach (self::$routes as $pattern => $route) {
             if (preg_match("#{$pattern}#", $url, $matches)) {
-                debug($matches);
                 foreach ($matches as $key => $val) {
                     if (is_string($key)) {
                        $route[$key] = $val;
@@ -46,11 +72,11 @@ class Router
                 if (!isset($route['admin_prefix'])) {
                     $route['admin_prefix'] = '';
                 } else {
-                    $route['admin_prefix'] = '\\';
+                    $route['admin_prefix'] .= '\\';
                 }
                 $route['controller'] = self::upperCamelCase($route['controller']);
-                debug($route);
-                return  true;
+                self::$route = $route;
+                return true;
             }
         }
         return false;
