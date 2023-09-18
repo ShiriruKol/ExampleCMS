@@ -8,6 +8,7 @@ class MainController extends Controller
 {
     public function indexAction(): void
     {
-        echo __METHOD__;
+
     }
+
 }
