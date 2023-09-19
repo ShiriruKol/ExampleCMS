@@ -1,6 +1,8 @@
 <?php
 
+
 namespace core;
+
 
 abstract class Controller
 {
@@ -10,20 +12,22 @@ abstract class Controller
     public false|string $layout = '';
     public string $view = '';
     public object $model;
+
+
     public function __construct(public $route = [])
     {
 
     }
 
-    public function getModel(): void
+    public function getModel()
     {
-        $model = 'app/models\\' . $this->route['admin_prefix'] . $this->route['controller'];
+        $model = 'app\models\\' . $this->route['admin_prefix'] . $this->route['controller'];
         if (class_exists($model)) {
             $this->model = new $model();
         }
     }
 
-    public function getView(): void
+    public function getView()
     {
         $this->view = $this->view ?: $this->route['action'];
         (new View($this->route, $this->layout, $this->view, $this->meta))->render($this->data);
@@ -34,9 +38,13 @@ abstract class Controller
         $this->data = $data;
     }
 
-    public function setMeta($title = '', $description = '', $keywords = '') {
+    public function setMeta($title = '', $description = '', $keywords = '')
+    {
         $this->meta = [
-            'title' => $title, 'description' => $description, 'keywords' => $keywords,
+            'title' => $title,
+            'description' => $description,
+            'keywords' => $keywords,
         ];
     }
+
 }

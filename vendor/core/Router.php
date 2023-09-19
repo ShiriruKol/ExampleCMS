@@ -1,9 +1,12 @@
 <?php
 
+
 namespace core;
+
 
 class Router
 {
+
     protected static array $routes = [];
     protected static array $route = [];
 
@@ -22,7 +25,7 @@ class Router
         return self::$route;
     }
 
-    protected  static function removeQueryString($url)
+    protected static function removeQueryString($url)
     {
         if ($url) {
             $params = explode('&', $url, 2);
@@ -36,14 +39,11 @@ class Router
     public static function dispatch($url)
     {
         $url = self::removeQueryString($url);
-
         if (self::matchRoute($url)) {
-
             $controller = 'app\controllers\\' . self::$route['admin_prefix'] . self::$route['controller'] . 'Controller';
             if (class_exists($controller)) {
 
-
-                /** @var  Controller $controllerObject */
+                /** @var Controller $controllerObject */
                 $controllerObject = new $controller(self::$route);
 
                 $controllerObject->getModel();
@@ -64,13 +64,13 @@ class Router
         }
     }
 
-    public  static function matchRoute($url): bool
+    public static function matchRoute($url): bool
     {
         foreach (self::$routes as $pattern => $route) {
             if (preg_match("#{$pattern}#", $url, $matches)) {
-                foreach ($matches as $key => $val) {
-                    if (is_string($key)) {
-                       $route[$key] = $val;
+                foreach ($matches as $k => $v) {
+                    if (is_string($k)) {
+                        $route[$k] = $v;
                     }
                 }
                 if (empty($route['action'])) {
@@ -89,18 +89,16 @@ class Router
         return false;
     }
 
+    // CamelCase
     protected static function upperCamelCase($name): string
     {
-        // example-word => example word
-        $name = str_replace('-', ' ', $name);
-        // example word => Example Word
-        $name = ucwords($name);
-        // Example Word => ExampleWord
-        return str_replace(' ', '', $name);
+        return str_replace(' ', '', ucwords(str_replace('-', ' ', $name)));
     }
 
+    // camelCase
     protected static function lowerCamelCase($name): string
     {
         return lcfirst(self::upperCamelCase($name));
     }
+
 }
